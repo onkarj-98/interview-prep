@@ -1,6 +1,6 @@
 # SRS Session - Two Pointers & Sliding Window
 # Solve each from scratch, no notes.
-from collections import defaultdict
+from collections import Counter, defaultdict
 # ── 1. Remove Duplicates from Sorted Array (LC 26) ──────────────────────────
 # Modify in-place, return count of unique elements.
 # Input: nums = [1,1,2] → Output: 2, nums = [1,1,2,...]
@@ -89,13 +89,51 @@ def findAnagrams(s, p):
 # Find max number of consecutive 1s in binary array.
 # Input: nums = [1,1,0,1,1,1] → Output: 3
 def findMaxConsecutiveOnes(nums):
-    pass
+    maxOnes = 0
+    curOnes = 0
+    for num in nums:
+        if num == 1:
+            curOnes += 1
+            maxOnes = max(curOnes, maxOnes)
+        else:
+            curOnes = 0
+    return maxOnes
 
+
+
+    
+        
 # ── 6. Minimum Window Substring (LC 76) ──────────────────────────────────────
 # Find smallest window in s containing all chars of t.
 # Input: s = "ADOBECODEBANC", t = "ABC" → "BANC"
 def minWindow(s, t):
-    pass
+    res = ""
+    left = 0
+    tFreq = Counter(t)
+    windowFreq = defaultdict(int)
+    need = len(tFreq)
+
+    for right in range(len(s)):
+        char = s[right]
+        windowFreq[char] += 1
+
+        if windowFreq[char] == tFreq[char]:
+            need -= 1
+        # now shrink, from left
+        while need == 0:
+            char = s[left]
+            if not res or (right - left) + 1 < len(res):
+                res = s[left: right + 1]
+            windowFreq[char] -= 1
+            if windowFreq[char] < tFreq[char]:
+                need += 1
+            left += 1
+
+    return res 
+
+
+
+    
 
 
 if __name__ == "__main__":
